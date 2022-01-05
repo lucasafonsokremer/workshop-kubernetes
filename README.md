@@ -1,7 +1,7 @@
 ## Workshop Kubernetes
 
 
-![](https://avatars.githubusercontent.com/u/13629408?s=200&v=4)
+![](https://avatars.githubusercontent.com/u/13629408?s=200&v=4?style=centerme)
 
 Neste repositório descrevo passo à passo como executar um cluster Kubernetes localmente para fins de estudo. Nos tópicos abaixo você vai obter informações para criar cluster `Múltiplos Nós`, `Load Balancer`, `Observabilidade` e afins.
 
