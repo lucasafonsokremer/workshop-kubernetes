@@ -9,11 +9,14 @@ Neste repositório centralizo um conteúdo base para quem queira aprofundar seus
 
 **Conteúdo:**
 
-01. [**Instalação e configuração do Kind**](Content/kind/README.md)
-02. [**LoadBalancer com MetalLB**](Content/metallb/README.md)
-03. [**Metrics Server**](Content/metrics-server/README.md)
-04. [**Kubernetes Dashboard**](Content/dashboard/README.md)
-05. [**Nginx Ingress Controller**](Content/nginx-ingress-controller/README.md)
+01. [**The Big Bang: Containers, Namespaces, CGroups, Runtime e Kubernetes**](Content/origem/README.md)
+02. [**Os principais controllers**](Content/metallb/README.md)
+03. [**Objetos do Kubernetes**](Content/metrics-server/README.md)
+04. [**Ciclo de criação da aplicação**](Content/metrics-server/README.md)
+05. [**Ingress e Service Mesh**](Content/dashboard/README.md)
+06. [**RBAC, Certificados e API**](Content/dashboard/README.md)
+07. [**Algumas práticas de segurança**](Content/nginx-ingress-controller/README.md)
+08. [**Dicas para aumentar a produtividade**](Content/nginx-ingress-controller/README.md)
 
 **Requisitos:**
 
