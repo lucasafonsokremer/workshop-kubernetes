@@ -16,7 +16,7 @@ Neste repositório centralizo um conteúdo base para quem queira aprofundar seus
 05. [**Ingress e Service Mesh**](Content/dashboard/README.md)
 06. [**RBAC, Certificados e API**](Content/dashboard/README.md)
 07. [**Algumas práticas de segurança**](Content/nginx-ingress-controller/README.md)
-08. [**Dicas para aumentar a produtividade**](Content/nginx-ingress-controller/README.md)
+08. [**Dicas para aumentar a produtividade**](Content/dicas/README.md)
 
 **Requisitos:**
 
