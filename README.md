@@ -1,7 +1,9 @@
 ## Workshop Kubernetes
 
 
-<img align="center" src="https://avatars.githubusercontent.com/u/13629408?s=200&v=4">
+<p align="center">
+  <img src="https://avatars.githubusercontent.com/u/13629408?s=200&v=4"/>
+</p>
 
 Neste repositório centralizo um conteúdo base para quem queira aprofundar seus conhecimentos no Kubernetes, famosa ferramenta de orquestração de containers.
 
