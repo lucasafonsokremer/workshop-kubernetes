@@ -72,6 +72,7 @@ kubectl krew install [nome do plugin]
 kubectl krew install ctx
 kubectl krew install ns
 kubectl krew install example
+kubectl krew install score
 ```
 
 ### Utilizando um plugin
