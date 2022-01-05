@@ -24,7 +24,7 @@ echo 'source <(kubectl completion bash)' >> ~/.bashrc
 
 **Krew itself is a kubectl plugin that is installed and updated via Krew (yes, Krew self-hosts).**
 
-* O Kubectl por padrão não possui várias funcionalidades, e através do Krew, podemos gerenciar os plugins de forma fácil e "criar" novas funcionalidaes ao nosso kubectl.
+* O Kubectl por padrão não possui várias funcionalidades, e através do Krew, podemos gerenciar os plugins de forma fácil e "acoplar" novas funções ao nosso kubectl.
 
 * A documentação do Krew se encontra no repositório oficial, que você pode conferir neste [link](https://github.com/kubernetes-sigs/krew).
 
