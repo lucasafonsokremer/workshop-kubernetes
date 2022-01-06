@@ -12,6 +12,12 @@ Além da facilidade de empacotar aplicações, o uso de containers permite emula
 
 Por fim mas não menos importante, um container tem como característica a portabilidade. Como ele deve ser imutável e todas as dependências imbutidas nele, ele irá rodar em qualquer outro sistema que possua por exemplo, um Docker instalado.
 
+### Ambiente tradicional vs container
+
+<p align="center">
+  <img src="https://d33wubrfki0l68.cloudfront.net/26a177ede4d7b032362289c6fccd448fc4a91174/eb693/images/docs/container_evolution.svg"/>
+</p>
+
 ## Namespaces
 
 O Namespace é uma funcionalidade do Kernel Linux que vem desde a versão 2.6.24 e ele permite o total isolamento de processos. **Em poucas palavras, os namespaces são nosso separador lógico**. Basicamente ele permite que um container possua seu próprio ambiente isolado, ou seja, cada container possui a sua árvore de processos, sem que um interfira na execução do outro.
