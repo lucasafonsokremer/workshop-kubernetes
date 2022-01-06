@@ -47,4 +47,33 @@ Kubernetes nada mais é que um sistema de orquestração de containers, desenvol
 
 Neste [link](https://kubernetes.io/pt-br/docs/concepts/overview/what-is-kubernetes) podemos ter uma descrição mais ampla do que é a ferramenta.
 
-Existem
+Existem alguns orquestradores no mercado além do Kubernetes, como por exemplo o Nomad e Swarm. Mas o Kubernetes possui algumas características que o tornam disparado o principal orquestrador de containers do mercado, sendo suas principais características:
+
+* **Possui infraestrutura declarativa: Em resumo eu falo para o kubernetes qual o estado desejado e ele se encarrega de entregar aquele estado**
+* **Reconciliation loop: Basicamente o scheduler fala o estado desejado para os diferentes subsistemas (chamados de controllers) e eles trabalham para atingir este objetivo.**
+
+Além destas características, outros pontos bem importantes e que diferenciam de outros orquestradores são:
+
+* Descoberta de serviço e balanceamento de carga
+* Orquestração de armazenamento
+* Lançamentos e revisões automatizadas
+* Empacotamento binário automático
+* Autocorreção
+* Gerenciamento de configuração e segredos
+
+Para que tudo isso seja possível, o Kubernetes possui uma arquitetura distribuida, baseada em micro serviços, que você pode validar como o control plane funciona neste [link](https://kubernetes.io/pt-br/docs/concepts/architecture/control-plane-node-communication/) e neste [link](https://kubernetes.io/pt-br/docs/concepts/architecture/cloud-controller/) você terá uma visão dos componentes.
+
+Mas para facilitar, seus principais componentes são:
+
+* kube-apiserver = Tudo passa por ele, somente ele pode escrever no ETCD
+* ETCD = Banco de dados que armazena o estado do cluster
+* kube-scheduler = gerencia onde será escalado novos pods
+* kubelet = Nosso "node agent" que roda em todos os nós. Ele é responsável por conversar com nosso apiserver
+* kube-proxy = Quando eu crio um serviço, o kube-proxy vai criar todas as regras de iptables para estruturar os serviços em todos os nós
+* CNI = Cria uma interface de rede, responsável por tratar a comunicação pod to pod.
+
+### Arquitetura do Kubernetes
+
+<p align="center">
+  <img src="https://d33wubrfki0l68.cloudfront.net/518e18713c865fe67a5f23fc64260806d72b38f5/61d75/images/docs/post-ccm-arch.png"/>
+</p>
