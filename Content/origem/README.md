@@ -77,3 +77,9 @@ Mas para facilitar, seus principais componentes são:
 <p align="center">
   <img src="https://d33wubrfki0l68.cloudfront.net/518e18713c865fe67a5f23fc64260806d72b38f5/61d75/images/docs/post-ccm-arch.png"/>
 </p>
+
+### Mas e como todos estes componentes se conversam, para subir meu container?
+
+<p align="center">
+  <img src="https://cdn-images-1.medium.com/max/1500/1*WDJmiyarVfcsDp6X1-lLFQ.png"/>
+</p>
