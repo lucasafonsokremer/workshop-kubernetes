@@ -80,6 +80,8 @@ Mas para facilitar, seus principais componentes são:
 
 ### Mas e como todos estes componentes se conversam, para subir meu container?
 
+
+
 <p align="center">
   <img src="https://cdn-images-1.medium.com/max/1500/1*WDJmiyarVfcsDp6X1-lLFQ.png"/>
 </p>
