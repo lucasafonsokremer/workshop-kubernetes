@@ -2,17 +2,25 @@
 
 ## Containers
 
-**Históricamente, havia um problema na carga e transporte de mercadorias em návios comerciais, já que as cargas possuiam diferentes tamanhos, formatos e peso. Isto em grande escala, tornava complexo o processo de gerenciamento e transporte. Com este problema em mãos, foi desenvolvido um "padrão" de armazenamento que, indiferente da carga, o gerênciamento e transporte seriam sempre os mesmos, aumentando assim nossa escala e produtividade.**
+**Historicamente, havia um problema na carga e transporte de mercadorias em navios comerciais, já que as cargas possuíam diferentes tamanhos, formatos e pesos. Isto em grande escala, tornava complexo o processo de gerenciamento e transporte. Com este problema em mãos, foi desenvolvido um "padrão" de armazenamento que, indiferente da carga, o gerenciamento e transporte seriam sempre os mesmos, aumentando assim nossa escala e produtividade.**
 
-**Os containers em computação, não são muito diferentes já que ele é um agrupamento de uma aplicação com todas as suas dependências e que compartilha o Kernel do sistema operacional** do host onde ele está executando, seja ela uma máquina física ou virtual.
+**Em computação, os containers não são muito diferentes, trata-se de um agrupamento de uma aplicação com todas as suas dependências e que compartilha o Kernel do sistema operacional** do host onde ele está executando, seja ela uma máquina física ou virtual.
 
 O container é nada mais que uma imagem em execução. Esta imagem por sua vez deve ser enxuta, contendo apenas o necessário para rodar a aplicação, sem que ocorra nenhuma alteração, criando-se assim a ideia de imutabilidade. **O Kernel compartilhado, proporciona um melhor desempenho devido ao gerenciamento centralizado de recursos, é possível inclusive fazer uma analogia a ideia de: "É melhor ter um único porteiro para um edifício, já que centralizamos nele todo o gerênciamento de entrada no condomínio, imagine agora ter um porteiro por apartamento..."**
 
 Além da facilidade de empacotar aplicações, o uso de containers permite emular um novo sistema operacional e reutilizar os recursos de hardware de uma forma mais inteligente.
 
-Por fim mas não menos importante, um container tem como característica a portabilidade. Como ele deve ser imutável e todas as dependências imbutidas nele, ele irá rodar em qualquer outro sistema que possua por exemplo, um Docker instalado.
+Por fim mas não menos importante, um container tem como característica a portabilidade. Como ele deve ser imutável e todas as dependências embutidas nele, ele irá rodar em qualquer outro sistema que possua por exemplo, um Docker instalado.
 
 ### Ambiente tradicional vs container
+
+A imagem abaixo compara a execução de aplicações em servidores físicos, virtuais e containeres, apresentando a visão de camadas entre hardware, sistema operacional e aplicação.
+
+* Traditional deployment: Aplicações instaladas diretamente em servidores físicos. Dificultando a combinação de necessidades das aplicações e hardware disponível no servidor, gerando desperdício de recurso e problemas de escalabilidade.
+
+* Virtualized deployment: Servidores virtuais com recursos suficientes para a execução das aplicações, compartilham o hardware, possibilitando melhor uso dos recursos. Porém, necessita de um SO Guest (isolado) para cada VM, com mais camadas entre o hardware e aplicação final aumenta o overhead e o consumo de memória.
+
+* Container deployment: Containers são similares à VMs, porém compartilham o SO possuindo um isolamento mais leve, essa característica reduz o overhead e permite que containeres possam ser instanciados em poucos segundos, tendo também um footprint de memória mais enxuto, apenas com a aplicação fim e as libs necessárias para sua execução.
 
 <p align="center">
   <img src="https://d33wubrfki0l68.cloudfront.net/26a177ede4d7b032362289c6fccd448fc4a91174/eb693/images/docs/container_evolution.svg"/>
@@ -67,7 +75,7 @@ Além destas características, outros pontos bem importantes e que diferenciam d
 * Autocorreção
 * Gerenciamento de configuração e segredos
 
-Para que tudo isso seja possível, o Kubernetes possui uma arquitetura distribuida, baseada em micro serviços, que você pode validar como o control plane funciona neste [link](https://kubernetes.io/pt-br/docs/concepts/architecture/control-plane-node-communication/) e neste [link](https://kubernetes.io/pt-br/docs/concepts/architecture/cloud-controller/) você terá uma visão dos componentes.
+Para que tudo isso seja possível, o Kubernetes possui uma arquitetura distribuída, baseada em micro serviços, que você pode validar como o control plane funciona neste [link](https://kubernetes.io/pt-br/docs/concepts/architecture/control-plane-node-communication/) e neste [link](https://kubernetes.io/pt-br/docs/concepts/architecture/cloud-controller/) você terá uma visão dos componentes.
 
 Mas para facilitar, seus principais componentes são:
 
