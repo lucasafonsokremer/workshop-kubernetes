@@ -52,20 +52,18 @@ kubectl delete -f pod.yaml
 
 ## Cronjobs
 
-## Endpoints
-
 ## Services
 
 ## Persistent volumes
 
 ## Persistent volumes claims
 
-## Alguns controllers que recomendo a leitura depois
+## Alguns outros controllers que recomendo a leitura
 
 Você pode começar por:
 
-* Statefulsets
-* Replicasets
-* Poddisruptionbudgets
-* Endpoints
-* Storageclasses
+* [Statefulsets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)
+* [Replicasets](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/)
+* [Endpoints](https://kubernetes.io/docs/concepts/services-networking/service/)
+* [Poddisruptionbudgets](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/)
+* [Storageclasses](https://kubernetes.io/docs/concepts/storage/storage-classes/)
