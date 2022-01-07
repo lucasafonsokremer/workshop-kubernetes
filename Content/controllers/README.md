@@ -54,6 +54,8 @@ kubectl delete -f pod.yaml
 
 ## Services
 
+## Horizontal pod autoscalers
+
 ## Persistent volumes
 
 ## Persistent volumes claims
