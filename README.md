@@ -10,7 +10,7 @@ Neste repositório centralizo um conteúdo base para quem queira aprofundar seus
 **Conteúdo:**
 
 01. [**The Big Bang: Containers, Namespaces, CGroups, Runtime e Kubernetes**](Content/origem/README.md)
-02. [**Os principais controllers**](Content/metallb/README.md)
+02. [**Os principais controllers**](Content/controllers/README.md)
 03. [**Objetos do Kubernetes**](Content/metrics-server/README.md)
 04. [**Ciclo de criação da aplicação**](Content/metrics-server/README.md)
 05. [**Ingress e Service Mesh**](Content/dashboard/README.md)
