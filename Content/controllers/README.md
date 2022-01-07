@@ -37,3 +37,35 @@ Para remover basta:
 ```
 kubectl delete -f pod.yaml
 ```
+
+## Deployment
+
+[Documentação oficial](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+
+## Daemonset
+
+## Service Account
+
+## Secrets
+
+## Configmap
+
+## Cronjobs
+
+## Endpoints
+
+## Services
+
+## Persistent volumes
+
+## Persistent volumes claims
+
+## Alguns controllers que recomendo a leitura depois
+
+Você pode começar por:
+
+* Statefulsets
+* Replicasets
+* Poddisruptionbudgets
+* Endpoints
+* Storageclasses
