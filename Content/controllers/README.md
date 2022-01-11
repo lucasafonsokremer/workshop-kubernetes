@@ -42,21 +42,149 @@ kubectl delete -f pod.yaml
 
 [Documentação oficial](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
 
+O Deployment é um "supervisor".
+
 O Deployment é um dos principais senão o principal controller do seu cluster. Com ele podemos definir em mais alto nível o estado de um pod e um replicaset. Nele, possuímos três pontos importates:
 
-* Agora possuímos as especificações do deployment;
-* Definição da quantidade de réplicas nas especs do deployment;
-* Definição de selector nas specs do deployment.
+* Especificações do deployment, área não existente quando criamos o exemplo do pod;
+* Definição da quantidade de réplicas nas especificações do deployment;
+* Definição de selector nas especificações do deployment. Através dele o service vai conseguir identificar qual pod ele precisa encaminhar a requisição.
 
 Os principais usos de um deployment seriam em alto nível:
 
-* 
+*
 
-## Daemonset
+Exemplo de um deployment que faz a mesma criação do pod do exemplo anterior, mas agora controlamos a quantidade de réplicas e passamos outras definições importantes.
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: default
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+```
+ 
+Seguindo com o Deployment, possuímos alguns pontos importantes que SEMPRE precisam ser aplicados, como por exemplo:
+
+* Limitação de CPU e memória (até o momento, o Kubernetes gerencia nativamente apenas estes dois)
+* Uso do liveness e readiness probes
+
+### Limitação de recursos
+
+Para limitar recursos, trabalhamos com limits e requests, com ambos o escalonador do Kubernetes consegue tomar as melhores decisões. Por padrão, quando um cluster está sobrecarregado, os pods que excedem suas requests serão encerrados antes dos que excederem seus limits.
+
+O requests e limits funcionam como um soft e hard limit de uso de hardware. Caso um serviço venha consumir mais que o limits, o próprio OOM Killer do Linux irá se encarregar de encerrar o pod.
+
+Um ponto importante é que o requests é o mínimo necessário para subir sua aplicação, caso este recurso não esteja disponível no node, o pod não entrará em execução.
+
+O uso de ResourceQuota e LimitRange é algo que precisa ser utilizado com cuidado, já que cada aplicação possui a sua particularidade, e limitar tão alto nível pode ser catastrófico.
+
+* Requests e Limits
+
+```
+spec:
+  containers:
+  - name: demo
+    image: cloudnatived/demo:hello
+    ports:
+    - containerPort: 8888
+    resources:
+      requests:
+        memory: "10Mi"
+        cpu: "100m"
+      limits: 
+        memory: "20Mi" 
+        cpu: "250m"
+```
+
+### Health Check da aplicação com liveness e readiness probes
+
+O Health Check é peça fundamental para redução do downtime de uma aplicação. No Kubernetes possuímos dois probes importantes que seriam:
+
+* liveness
+* readiness
+
+Cada um com sua função e que muitas das vezes, vemos apenas um deles descritos em yamls, mas é uma boa prática ter ambos pelos seguintes motivos:
+
+* liveness = Neste probe, o Kubernetes avalia se o container ou pod está "vivo" através do protocolo e path, **caso ele não responda as requisições, ele será reiniciado**
+* readiness = Um container cujo o readiness probe falhe, será removido de qualquer services que corresponda este pod. **Em poucas palavras, este probe é responsável de tirar o container não saudável do balanceamento de carga.**
+
+```
+spec:
+  containers:
+  - name: demo
+    image: cloudnatived/demo:hello
+    ports:
+    - containerPort: 8888
+    resources:
+      requests:
+        memory: "10Mi"
+        cpu: "100m"
+      limits: 
+        memory: "20Mi" 
+        cpu: "250m"
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 8888
+      initialDelaySeconds: 10
+      periodSeconds: 6
+      timeoutSeconds: 5
+      failureThreshold: 3
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: 8888
+      periodSeconds: 4
+      timeoutSeconds: 5
+      failureThreshold: 1
+```
+
+## Namespaces
+
+É sempre conveniente trabalharmos com vários namespaces em um cluster, afim de agrupar recursos relacionados e facilitar trabalhar com eles dentro de um cluster. Normalmente se trabalha separando por aplicações ou times.
+
+Os namespaces não podem ser aninhados. Mas é possível realizar o bloqueio do trafego de entrada e saída, além da limitação de recursos com ResourceQuota e LimitRange.
+
+Outra boa prática é não rodar ambientes de dev, qa e produção, dentro do mesmo cluster separados por namespaces, já que algumas políticas de PCI Security Standards Council proíbem esta prática.
+
+Exemplo de um namespace:
+
+```
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: frontend
+```
 
 ## Service Account
 
 ## Services
+
+[Documentação oficial](https://kubernetes.io/docs/concepts/services-networking/service)
 
 Uma das principais funcionalidades do Kubernetes, é o balanceamento de carga automático que funciona graças ao services, você possui uma forma de expor seu serviço, seja através de ClusterIP, NodePort ou LoadBalancer para então conseguir distribuir as requisições entre diversos pods do seu deployment por exemplo.
 
@@ -67,6 +195,8 @@ Ao expor um serviço, precisamos ter em mente que:
 * ClusterIP = É a opção padrão. Acessível apenas de dentro do cluster e também é possível resolver o DNS dele internamente
 * NodePort = Abre uma porta alta externa, em todos os nós e as requisições que chegam ali, são redirecionadas para dentro do cluster. Quando criamos um serviço do tipo NodePort, ele automaticamente cria um ClusterIP e no topo, um NodePort.
 * LoadBalancer = Muito utilizado quando é necessário uma iteração externa, como um cloud provider. O serviço LoadBalancer é criado no topo do NodePort e ClusterIP.
+
+## Daemonset
 
 ## Secrets
 
