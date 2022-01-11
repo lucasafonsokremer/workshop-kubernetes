@@ -79,11 +79,12 @@ Para que tudo isso seja possível, o Kubernetes possui uma arquitetura distribu�
 
 Mas para facilitar, seus principais componentes são:
 
-* kube-apiserver = Tudo passa por ele, somente ele pode escrever no ETCD
-* ETCD = Banco de dados que armazena o estado do cluster
-* kube-scheduler = gerencia onde será escalado novos pods
-* kubelet = Nosso "node agent" que roda em todos os nós. Ele é responsável por conversar com nosso apiserver
-* kube-proxy = Quando eu crio um serviço, o kube-proxy vai criar todas as regras de iptables para estruturar os serviços em todos os nós
+* kube-apiserver = Tudo passa por ele, somente ele pode escrever no ETCD, portanto ele é a central de operação do cluster
+* ETCD = Banco de dados que armazena o estado do cluster, rede e outras informações
+* kube-scheduler = Gerencia onde será escalado novos pods, analisando qual node é o melhor para receber aquele pod
+* kube-controller-manager = Controle principal que interage com o kube-apiserver para validar determinado estado
+* kubelet = Nosso "node agent" que roda em todos os nós. Ele é responsável por conversar com nosso container runtime e garantir que os containers que precisam estar em execução, realmente estejam
+* kube-proxy = Quando eu crio um serviço, o kube-proxy vai criar todas as regras de iptables (rede) para estruturar os serviços em todos os nós
 * CNI = Cria uma interface de rede, responsável por tratar a comunicação pod to pod.
 
 ### Arquitetura do Kubernetes

@@ -1,4 +1,4 @@
-# Os principais controllers 
+# Os principais workloads e controllers 
 
 "Na robótica e em automações, um loop de controle é um loop sem fim que regula o estado de um sistema." Definição disponível na [documentação oficial](https://kubernetes.io/docs/concepts/architecture/controller/).
 
@@ -42,9 +42,31 @@ kubectl delete -f pod.yaml
 
 [Documentação oficial](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
 
+O Deployment é um dos principais senão o principal controller do seu cluster. Com ele podemos definir em mais alto nível o estado de um pod e um replicaset. Nele, possuímos três pontos importates:
+
+* Agora possuímos as especificações do deployment;
+* Definição da quantidade de réplicas nas especs do deployment;
+* Definição de selector nas specs do deployment.
+
+Os principais usos de um deployment seriam em alto nível:
+
+* 
+
 ## Daemonset
 
 ## Service Account
+
+## Services
+
+Uma das principais funcionalidades do Kubernetes, é o balanceamento de carga automático que funciona graças ao services, você possui uma forma de expor seu serviço, seja através de ClusterIP, NodePort ou LoadBalancer para então conseguir distribuir as requisições entre diversos pods do seu deployment por exemplo.
+
+O Service consegue este balanceamento, já que outro controller, o Endpoints, possui a lista com todos os endereços de pods, de um deployment em específico.
+
+Ao expor um serviço, precisamos ter em mente que:
+
+* ClusterIP = É a opção padrão. Acessível apenas de dentro do cluster e também é possível resolver o DNS dele internamente
+* NodePort = Abre uma porta alta externa, em todos os nós e as requisições que chegam ali, são redirecionadas para dentro do cluster. Quando criamos um serviço do tipo NodePort, ele automaticamente cria um ClusterIP e no topo, um NodePort.
+* LoadBalancer = Muito utilizado quando é necessário uma iteração externa, como um cloud provider. O serviço LoadBalancer é criado no topo do NodePort e ClusterIP.
 
 ## Secrets
 
@@ -52,15 +74,13 @@ kubectl delete -f pod.yaml
 
 ## Cronjobs
 
-## Services
-
 ## Horizontal pod autoscalers
 
 ## Persistent volumes
 
 ## Persistent volumes claims
 
-## Alguns outros controllers que recomendo a leitura
+## Recomendo também a leitura de outros temas importantes
 
 Você pode começar por:
 
