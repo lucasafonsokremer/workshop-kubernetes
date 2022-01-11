@@ -164,6 +164,8 @@ spec:
 
 ## Namespaces
 
+[Documentação oficial](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
+
 É sempre conveniente trabalharmos com vários namespaces em um cluster, afim de agrupar recursos relacionados e facilitar trabalhar com eles dentro de um cluster. Normalmente se trabalha separando por aplicações ou times.
 
 Os namespaces não podem ser aninhados. Mas é possível realizar o bloqueio do trafego de entrada e saída, além da limitação de recursos com ResourceQuota e LimitRange.
@@ -182,13 +184,61 @@ metadata:
 
 ## Service Account
 
+[Documentação oficial](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
+
+Service Account é um objeto importante do cluster. Ela está presente em todos os pods, mesmo você não especificando. Por padrão quando criamos um pod, se a service account não for parametrizada no deployment, é atribuida a service account "default" daquele namespace. Portanto é uma boa prática de segurança, criar service accounts para cada workload, evitando-se assim atribuir permissões de uma forma generalizada dentro do cluster, sem a intenção.
+
+No Kubernetes, não existe o recurso "usuário", para o Kubernetes, um usuário é um indivíduo em posse de um certificado e uma chave, portanto ele é algo independente do cluster e pode ser gerenciado por exemplo pelo cloud provider.
+
+Uma Service Account por outro lado, é um recurso gerenciado pela API do Kubernetes, com ele é possível que processos internos de um pod se comuniquem com o apiserver do Kubernetes e tomem alguma ação. Um exemplo prático seria um Kubernetes Operator, muito utilizado para gerir aplicações complexas.
+
+```
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: build-robot
+automountServiceAccountToken: false
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: default
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      serviceAccountName: build-robot
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+
+```
+
 ## Services
 
 [Documentação oficial](https://kubernetes.io/docs/concepts/services-networking/service)
 
-Uma das principais funcionalidades do Kubernetes, é o balanceamento de carga automático que funciona graças ao services, você possui uma forma de expor seu serviço, seja através de ClusterIP, NodePort ou LoadBalancer para então conseguir distribuir as requisições entre diversos pods do seu deployment por exemplo.
+Uma das principais funcionalidades do Kubernetes, é o balanceamento de carga automático que funciona graças ao services, você possui uma forma de expor seu serviço já com DNS devidamente configurado, seja através de ClusterIP, NodePort ou LoadBalancer para então conseguir distribuir as requisições entre diversos pods do seu deployment por exemplo.
 
-O Service consegue este balanceamento, já que outro controller, o Endpoints, possui a lista com todos os endereços de pods, de um deployment em específico.
+O Service consegue este balanceamento, já que outro controller, o Endpoints, possui a lista com todos os endereços de pods de um deployment em específico.
 
 Ao expor um serviço, precisamos ter em mente que:
 
@@ -196,13 +246,159 @@ Ao expor um serviço, precisamos ter em mente que:
 * NodePort = Abre uma porta alta externa, em todos os nós e as requisições que chegam ali, são redirecionadas para dentro do cluster. Quando criamos um serviço do tipo NodePort, ele automaticamente cria um ClusterIP e no topo, um NodePort.
 * LoadBalancer = Muito utilizado quando é necessário uma iteração externa, como um cloud provider. O serviço LoadBalancer é criado no topo do NodePort e ClusterIP.
 
+```
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: backend
+  name: backend
+spec:
+  containers:
+  - image: nginx
+    name: backend
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: frontend
+  name: frontend
+spec:
+  containers:
+  - image: nginx
+    name: frontend
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: backend
+  name: backend
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: backend
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: frontend
+  name: frontend
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: frontend
+  type: ClusterIP
+```
+
+Lembrando que ambos os serviços, embora o backend não esteja diretamente especificado mas é o valor padrão, são ClusterIP, portanto são serviços que estão acessíveis apenas de dentro do cluster.
+
+Para testar se está tudo ok basta:
+
+```
+kubectl exec frontend -- curl -Is backend
+```
+
+Supondo agora que o serviço rabbitMQ se encontre em outro namespace, posso fazer o seguinte para consumir o serviço do meu frontend:
+
+```
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rabbitnamespace
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: rabbit
+  name: rabbit
+  namespace: rabbitnamespace
+spec:
+  containers:
+  - image: nginx
+    name: rabbit
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: frontend
+  name: frontend
+spec:
+  containers:
+  - image: nginx
+    name: frontend
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: rabbit
+  name: rabbit
+  namespace: rabbitnamespace
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: rabbit
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: frontend
+  name: frontend
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: frontend
+  type: ClusterIP
+```
+
+Para acessar basta:
+
+```
+kubectl exec frontend -- curl -Is rabbit.rabbitnamespace
+```
+
 ## Daemonset
+
+[Documentação oficial](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/)
 
 ## Secrets
 
 ## Configmap
-
-## Cronjobs
 
 ## Horizontal pod autoscalers
 
@@ -216,6 +412,7 @@ Você pode começar por:
 
 * [Statefulsets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)
 * [Replicasets](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/)
+* [Cronjobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
 * [Endpoints](https://kubernetes.io/docs/concepts/services-networking/service/)
 * [Poddisruptionbudgets](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/)
 * [Storageclasses](https://kubernetes.io/docs/concepts/storage/storage-classes/)
