@@ -262,6 +262,8 @@ Ao expor um serviço, precisamos ter em mente que:
 * NodePort = Abre uma porta alta externa, em todos os nós e as requisições que chegam ali, são redirecionadas para dentro do cluster. Quando criamos um serviço do tipo NodePort, ele automaticamente cria um ClusterIP e no topo, um NodePort.
 * LoadBalancer = Muito utilizado quando é necessário uma iteração externa, como um cloud provider. O serviço LoadBalancer é criado no topo do NodePort e ClusterIP.
 
+[Maiores informações na documentação oficial](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)
+
 ```
 ---
 apiVersion: v1
