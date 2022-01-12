@@ -46,15 +46,17 @@ kubectl delete -f pod.yaml
 
 O Deployment é um "supervisor".
 
-O Deployment é um dos principais senão o principal controller do seu cluster. Com ele podemos definir em mais alto nível o estado de um pod e um replicaset. Nele, possuímos três pontos importates:
+O Deployment é um dos principais senão o principal controller do seu cluster. Com ele podemos definir em mais alto nível o estado de um pod e um replicaset. 
+
+<p align="center">
+  <img src="https://www.bluematador.com/hs-fs/hubfs/blog/new/Kubernetes%20Deployments%20-%20Rolling%20Update%20Configuration/Kubernetes-Deployments-Rolling-Update-Configuration.gif?width=1600&name=Kubernetes-Deployments-Rolling-Update-Configuration.gif"/>
+</p>
+
+Nele, possuímos três pontos importates:
 
 * Especificações do deployment, área não existente quando criamos o exemplo do pod;
 * Definição da quantidade de réplicas nas especificações do deployment;
 * Definição de selector nas especificações do deployment. Através dele o service vai conseguir identificar qual pod ele precisa encaminhar a requisição.
-
-Os principais usos de um deployment seriam em alto nível:
-
-*
 
 Exemplo de um deployment que faz a mesma criação do pod do exemplo anterior, mas agora controlamos a quantidade de réplicas e passamos outras definições importantes.
 
@@ -121,6 +123,10 @@ spec:
         cpu: "250m"
 ```
 
+<p align="center">
+  <img src="https://blog.kubecost.com/assets/images/k8s-recs-ands-limits.png"/>
+</p>
+
 ### Health Check da aplicação com liveness e readiness probes
 
 O Health Check é peça fundamental para redução do downtime de uma aplicação. No Kubernetes possuímos dois probes importantes que seriam:
@@ -163,6 +169,10 @@ spec:
       timeoutSeconds: 5
       failureThreshold: 1
 ```
+
+<p align="center">
+  <img src="https://miro.medium.com/max/1400/1*fdNZeCl7TESpFtrCcZKYcg.gif"/>
+</p>
 
 ## Namespaces
 
