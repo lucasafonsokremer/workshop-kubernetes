@@ -488,13 +488,13 @@ Outro ponto importante é que é possível fazer uso do HPA com métricas custom
 
 Você pode começar por:
 
-* [Statefulsets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)
-* [Replicasets](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/)
-* [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
-* [Configmaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
-* [Storageclasses](https://kubernetes.io/docs/concepts/storage/storage-classes/)
-* [Persistent volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
-* [Persistent volumes claims](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
-* [Cronjobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
-* [Endpoints](https://kubernetes.io/docs/concepts/services-networking/service/)
-* [Poddisruptionbudgets](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/)
+* [Statefulsets - Um método para criar apps stateful](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)
+* [Replicasets - Controller utilizado na gestão de pods](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/)
+* [Secrets - Um método de armazenar e consumir segredos, do cluster ou da cloud](https://kubernetes.io/docs/concepts/configuration/secret/)
+* [Configmaps - Um método de armazenar e consumir arquivos de conf ou variáveis](https://kubernetes.io/docs/concepts/configuration/configmap/)
+* [Storageclasses - Driver de conexão a sistemas de arquivos externos](https://kubernetes.io/docs/concepts/storage/storage-classes/)
+* [Persistent volumes - Pedaço de storage que consome o storageclass](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+* [Persistent volumes claims - Abstração de storage para a aplicação](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+* [Cronjobs - Jobs que necessitam nascer, executar e morrer em determinados horários](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
+* [Endpoints - Responsável pelo balanceamento do services](https://kubernetes.io/docs/concepts/services-networking/service/)
+* [Poddisruptionbudgets - Forma de controle de recursos](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/)
