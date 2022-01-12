@@ -10,10 +10,10 @@ Neste repositório centralizo um conteúdo base para quem queira aprofundar seus
 **Conteúdo:**
 
 01. [**The Big Bang: Containers, Namespaces, CGroups, Runtime e Kubernetes**](Content/origem/README.md)
-02. [**Objetos do Kubernetes**](Content/objetos/README.md)
-03. [**Os principais controllers**](Content/controllers/README.md)
-04. [**Manipulação e criação de imagens**](Content/metrics-server/README.md)
-05. [**Ciclo de criação da aplicação**](Content/metrics-server/README.md)
+02. [**Manipulação e criação de imagens**](Content/imagens/README.md)
+03. [**Objetos do Kubernetes**](Content/objetos/README.md)
+04. [**Os principais controllers**](Content/controllers/README.md)
+05. [**Eventos e logs para troubleshooting**](Content/eventsLogs/README.md)
 06. [**Ingress e Service Mesh**](Content/dashboard/README.md)
 07. [**RBAC, Certificados e API**](Content/dashboard/README.md)
 08. [**Algumas práticas de segurança**](Content/nginx-ingress-controller/README.md)
