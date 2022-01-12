@@ -2,6 +2,8 @@
 
 "Na robótica e em automações, um loop de controle é um loop sem fim que regula o estado de um sistema." Definição disponível na [documentação oficial](https://kubernetes.io/docs/concepts/architecture/controller/).
 
+**Quando utilizamos diretamente o docker e o container morre, você normalmente necessita intervir. Com o controller, é como se um supervisor cuidasse da saúde e estado deste container, em tempo integral**
+
 ## Pod
 
 [Documentação oficial](https://kubernetes.io/docs/concepts/workloads/pods/)
