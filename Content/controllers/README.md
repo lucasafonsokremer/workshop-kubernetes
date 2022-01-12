@@ -252,6 +252,10 @@ Uma das principais funcionalidades do Kubernetes, é o balanceamento de carga au
 
 O Service consegue este balanceamento, já que outro controller, o Endpoints, possui a lista com todos os endereços de pods de um deployment em específico.
 
+<p align="center">
+  <img src="https://miro.medium.com/max/700/1*KIVa4hUVZxg-8Ncabo8pdg.png"/>
+</p>
+
 Ao expor um serviço, precisamos ter em mente que:
 
 * ClusterIP = É a opção padrão. Acessível apenas de dentro do cluster e também é possível resolver o DNS dele internamente
