@@ -129,7 +129,7 @@ O Health Check é peça fundamental para redução do downtime de uma aplicaçã
 Cada um com sua função e que muitas das vezes, vemos apenas um deles descritos em yamls, mas é uma boa prática ter ambos pelos seguintes motivos:
 
 * liveness = Neste probe, o Kubernetes avalia se o container ou pod está "vivo" através do protocolo e path, **caso ele não responda as requisições, ele será reiniciado**
-* readiness = Um container cujo o readiness probe falhe, será removido de qualquer services que corresponda este pod. **Em poucas palavras, este probe é responsável de tirar o container não saudável do balanceamento de carga.**
+* readiness = Um container cujo o readiness probe falhe, não será adicionado ou removido de qualquer services que corresponda este pod. **Em poucas palavras, este probe é responsável garantir que um container não saudável não receba tráfego.**
 
 ```
 spec:
