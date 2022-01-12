@@ -396,22 +396,104 @@ kubectl exec frontend -- curl -Is rabbit.rabbitnamespace
 
 [Documentação oficial](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/)
 
-## Secrets
+O Daemonset possui uma pequena diferença se comparado ao Deployment, nele não especificamos a quantidade de réplicas que serão criadas. Basicamente um pod será escalado em cada node do cluster.
 
-## Configmap
+Normalmente o Daemonset é utilizado para aplicações que necessitem estar vinculadas algum node, como um sistema de monitoração ou logs.
 
 ## Horizontal pod autoscalers
 
-## Persistent volumes
+Horizontal pod autoscaler é uma das features mais importantes para criar elasticidade na aplicação. Com ele é possível que um Deployment ou StatefulSet se adapte com base em um ou mais parâmetros, afim de suportar o aumento de demanda no ambiente.
 
-## Persistent volumes claims
+Nele especificamos números de mínimo, máximo e com base em que métrica o deployment terá uma maior quantidade de réplicas.
 
-## Recomendo também a leitura de outros temas importantes
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ubuntu
+  template:
+    metadata:
+      labels:
+        app: ubuntu
+    spec:
+      containers:
+      - name: ubuntu
+        image: ubuntu:latest
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+        resources:
+          # É necessário especificar requests para o hpa atuar
+          # baseado em uso de CPU
+          requests:
+            cpu: "250m"
+
+---
+# A partir da versão 1.23 utilizar "autoscaling/v2"
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ubuntu
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ubuntu
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: AverageValue
+        averageValue: 100Mi
+```
+
+Agora para testar se tudo está ok vamos fazer um teste com o stress:
+
+```
+# validar nome do pod
+kubectl get pods
+# conectar no pod
+kubectl exec -it ubuntu-5d9d76f597-vflnl -- /bin/bash
+# agora dentro do pod instalar o stress e rodar o comando
+apt-get update && apt-get install stress -y && stress --cpu 3 --vm 1 --timeout 60
+```
+
+Em poucos instantes podemos ver o HPA atuando
+
+```
+kubectl get horizontalpodautoscalers.autoscaling
+```
+
+**O scale down irá levar alguns minutos**
+
+Outro ponto importante é que é possível fazer uso do HPA com métricas customizadas, como HTTP Requests, que é muito melhor que apenas CPU e memória:
+
+[Documentação das métricas customizadas](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#scaling-on-custom-metrics)
+
+# Recomendo também a leitura de outros temas importantes
 
 Você pode começar por:
 
 * [Statefulsets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)
 * [Replicasets](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/)
+* [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/)
+* [Configmaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
+* [Persistent volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+* [Persistent volumes claims](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
 * [Cronjobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
 * [Endpoints](https://kubernetes.io/docs/concepts/services-networking/service/)
 * [Poddisruptionbudgets](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/)
