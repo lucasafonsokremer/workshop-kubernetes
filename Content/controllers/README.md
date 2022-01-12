@@ -1,4 +1,4 @@
-# Os principais workloads e controllers 
+# Os principais controllers 
 
 "Na robótica e em automações, um loop de controle é um loop sem fim que regula o estado de um sistema." Definição disponível na [documentação oficial](https://kubernetes.io/docs/concepts/architecture/controller/).
 
