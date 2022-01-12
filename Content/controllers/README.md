@@ -500,7 +500,7 @@ Outro ponto importante é que é possível fazer uso do HPA com métricas custom
 
 [Documentação das métricas customizadas](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#scaling-on-custom-metrics)
 
-# Recomendo também a leitura de outros temas importantes
+# Recomendo também a leitura de outros controllers importantes
 
 Você pode começar por:
 
