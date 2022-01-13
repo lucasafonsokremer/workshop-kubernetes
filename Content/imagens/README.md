@@ -53,6 +53,7 @@ docker image build -t imagemtesteworkshop:1.0 .
 
 Outras instruções importantes são:
 
+* **USER**       = Usuário que a aplicação deve rodar, por padrão é o root mas sempre deve ser utilizado outro usuário, com menos privilégios administrativos.
 * **ENTRYPOINT** = Principal processo do meu container, como se fosse um init, se este processo morrer, meu container morre. O modo EXEC é o preferido a ser utilizado no entrypoint.
   * Exemplo: ENTRYPOINT ["/usr/sbin/apachectl"]
 * **CMD**        = Se não existir o entrypoint, os parâmetros devem ser passados via CMD. Ele deve executar um comando/processo quando o container subir (SO PODE TER 1 CMD POR CONTAINER)
@@ -109,4 +110,52 @@ RUN for virtualenvs in $(ls -1 /tmp/Dockerfile_requirements/) ; \
     done
 ```
 
-## Multi Stage
+## Multistage
+
+Em poucas palavras, o multistage cria uma pipeline entre dois containers no qual visa deixar o container final mais enxuto e é a única forma de utilizar duas instruções FROM no mesmo Dockerfile.
+
+O Multistage ataca dois pontos importantes:
+
+* Diminui a superfície de contato, deixando menos pacotes e possíveis "lixos" dentro do container, que são utilizados apenas no momento do build. Com isso aumentamos a segurança da nossa aplicação;
+* Diminui o tamanho final da imagem que será executada, portanto é mais rápido fazer o download de um registry, diminuíndo assim um possível downtime da aplicação durante o processo de atualização.
+
+Para criar nosso app com multistage basta:
+
+```
+# criar um diretório de testes
+mkdir /tmp/multistage
+# criar dockerfile
+touch /tmp/multistage/Dockerfile
+touch /tmp/multistage/meugo.go
+```
+
+Agora basta colar as seguintes instruções dentro do Dockerfile (a instrução AS significa apelido):
+
+```
+FROM golang AS buildando
+WORKDIR /app
+ADD . /app
+RUN go build -o meugo
+
+FROM alpine
+WORKDIR /buildfeito
+COPY --from=buildando /app/meugo /buildfeito/
+ENTRYPOINT ./meugo
+```
+
+Vamos criar também nossa aplicação:
+
+```
+package main
+import "fmt"
+
+func main(){
+        fmt.Println("Meu app em go")
+}
+```
+
+Agora para fazer o build é simples, basta executar o seguinte comando:
+
+```
+docker image build -t multistageworkshop:1.0 .
+```
