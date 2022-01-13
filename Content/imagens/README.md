@@ -163,4 +163,24 @@ docker image build -t multistageworkshop:1.0 .
 
 ## Enviando a imagem para um registry
 
+O primeiro passo é validar se o repositório que você busca, já se encontra no registry da AWS, que você pode acessar por este [link](https://console.aws.amazon.com/ecr/repositories?region=us-east-1), lembrando é claro de mudar a região.
 
+Após encontrar o repositório, você precisa se autenticar na AWS através do "Command line or programmatic access".
+
+Inserindo as credenciais no seu terminal e tendo o aws-cli devidamente instalado, basta realizar login no registry com o seguinte comando:
+
+```
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin IDREGISTRY.dkr.ecr.us-east-1.amazonaws.com
+```
+
+Após receber o ok de login, é necessário realizar o build da nova imagem:
+
+```
+docker build -t IDREGISTRY.dkr.ecr.us-east-1.amazonaws.com/logrotate:1.0.0
+```
+
+Feito o build, agora é só enviar a imagem pronta para o registry e utilizar dentro do seu EKS.
+
+```
+docker push IDREGISTRY.dkr.ecr.us-east-1.amazonaws.com/logrotate:1.0.0
+```
