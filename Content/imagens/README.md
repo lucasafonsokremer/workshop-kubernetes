@@ -20,14 +20,30 @@ Um exemplo, seria criar uma imagem e instalar um programa no sistema operacional
 
 ## Instruções
 
-Algumas das instruções mais comuns são:
+Já vamos dar início aos nossos testes, criando nossa primeira imagem.
+
+Primeiramente é necessário criar um diretório e colocar nele apenas arquivos que devem conter na aplicação e o próprio Dockerfile:
 
 ```
-FROM debian:latest             # especifica qual imagem ele vai usar como base
-LABEL app="frontend"           # Informacao que vai ficar dentro do metadata do contaner
-ENV maintainer="user@domain"   # Variavel de ambiente que vai ta dentro do container
-RUN mkdir diretoriodomeuapp    # RUN executa um comando em momento de build
+# criar um diretório de testes:
+mkdir /tmp/testedocker
+# criar dockerfile
+touch /tmp/testedocker/Dockerfile
 ```
+
+Agora basta colar as seguintes instruções dentro do Dockerfile:
+
+```
+FROM debian:latest             
+LABEL app="frontend"           
+ENV maintainer="user@domain"   
+RUN mkdir diretoriodomeuapp    
+```
+
+* **FROM**       = Especifica qual imagem ele vai usar como base 
+* **LABEL**      = Informacao que vai ficar dentro do metadata do contaner
+* **ENV**        = Variavel de ambiente que vai ta dentro do container
+* **RUN**        = Executa um comando em momento de build
 
 Agora para fazer o build é simples, basta executar o seguinte comando:
 
