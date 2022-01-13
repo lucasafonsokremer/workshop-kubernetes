@@ -135,12 +135,13 @@ Agora basta colar as seguintes instruções dentro do Dockerfile (a instrução 
 FROM golang AS buildando
 WORKDIR /app
 ADD . /app
-RUN go build -o meugo
+RUN go mod init meugo.go
+RUN go build -o meugo.go
 
 FROM alpine
 WORKDIR /buildfeito
-COPY --from=buildando /app/meugo /buildfeito/
-ENTRYPOINT ./meugo
+COPY --from=buildando /app/meugo.go /buildfeito/
+ENTRYPOINT ./meugo.go
 ```
 
 Vamos criar também nossa aplicação:
@@ -159,3 +160,7 @@ Agora para fazer o build é simples, basta executar o seguinte comando:
 ```
 docker image build -t multistageworkshop:1.0 .
 ```
+
+## Enviando a imagem para um registry
+
+
