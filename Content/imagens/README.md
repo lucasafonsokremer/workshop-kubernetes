@@ -132,13 +132,13 @@ touch /tmp/multistage/meugo.go
 Agora basta colar as seguintes instruções dentro do Dockerfile (a instrução AS significa apelido):
 
 ```
-FROM golang AS buildando
+FROM golang:latest AS buildando
 WORKDIR /app
 ADD . /app
 RUN go mod init meugo.go
 RUN go build -o meugo.go
 
-FROM alpine
+FROM alpine:latest
 WORKDIR /buildfeito
 COPY --from=buildando /app/meugo.go /buildfeito/
 ENTRYPOINT ./meugo.go
@@ -159,6 +159,45 @@ Agora para fazer o build é simples, basta executar o seguinte comando:
 
 ```
 docker image build -t multistageworkshop:1.0 .
+```
+
+### Comparando tamanho e segurança em images com o multistage
+
+Para validar a diferença de tamanho do nosso ap, basta rodar o seguinte comando e comparar o tamanho da imagem do golang com alpine:
+
+```
+docker images | agrep 'multistage|golang'
+```
+
+Agora como diminuímos consideravelmente a superfície de contato do container, vamos validar se realmente possuímos divergência na quantidade de riscos em aberto, mesmo utilizando imagens atualizadas:
+
+
+* Primeiro rodamos o comando do trivy, para a imagem do alpine, que é a imagem final da nossa aplicação:
+
+```
+trivy image multistageworkshop:1.0
+```
+
+Nosso retorno para esse caso foi:
+
+```
+multistageworkshop:1.0 (alpine 3.15.0)
+======================================
+Total: 0 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0)
+```
+
+* Agora vamos validar quantas vulnerabilidades existem na imagem do golang que utilizamos apenas para o build do nosso app:
+
+```
+trivy image golang:latest
+```
+
+O resultado foi o seguinte:
+
+```
+golang:latest (debian 11.2)
+===========================
+Total: 355 (UNKNOWN: 2, LOW: 254, MEDIUM: 54, HIGH: 31, CRITICAL: 14)
 ```
 
 ## Enviando a imagem para um registry
