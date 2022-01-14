@@ -296,4 +296,15 @@ curl https://ENDERECOCLUSTER:6443 --cacert ca --cert crt --key key
 
 ## Role-based Access Control (RBAC)
 
+**O RBAC é um método para regular o acesso aos recursos, baseando-se em regras "papéis" que são vinculadas a usuários ou grupos**.
+
+No RBAC, não existe DENIED. Você deve especificar apenas o que será liberado.
+
+Existem dois pontos importantes do RBAC no Kubernetes, que necessitam sempre ser levados em consideração:
+
+* As permissões são aditivas, portanto se o usuário está atrelado a mais de uma permissão, a com maior nível de acesso terá precedência.
+* Existem dois tipos de recurso no cluster, os que são vinculados a um namespace e os que não são. Desta forma as vezes é necessário escolher entre ClusterRole e Role.
+
+### Role, ClusterRole, RoleBinding e ClusterRoleBinding
+
 
