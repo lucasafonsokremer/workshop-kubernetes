@@ -307,4 +307,6 @@ Existem dois pontos importantes do RBAC no Kubernetes, que necessitam sempre ser
 
 ### Role, ClusterRole, RoleBinding e ClusterRoleBinding
 
-
+<p align="center">
+  <img src="rbac.png"/>
+</p>
