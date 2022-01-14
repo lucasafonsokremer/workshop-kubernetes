@@ -86,6 +86,25 @@ cat /run/secrets/kubernetes.io/serviceaccount/token
 curl https://kubernetes -k -H "Authorization: TOKENAQUI"
 ```
 
+* Devemos receber o seguinte retorno:
+
+```
+{
+  "kind": "Status",
+  "apiVersion": "v1",
+  "metadata": {
+    
+  },
+  "status": "Failure",
+  "message": "forbidden: User \"system:anonymous\" cannot get path \"/\"",
+  "reason": "Forbidden",
+  "details": {
+    
+  },
+  "code": 403
+}
+```
+
 ### Consumindo a API do Kubernetes externamente
 
 Agora vamos fazer uma requisição manual na API do kubernetes, utilizando o mesmo yaml que o kubectl utiliza.
