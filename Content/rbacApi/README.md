@@ -66,10 +66,28 @@ Normalmente, uma aplicação comum não deve possuir o token e nenhuma regra faz
 
 Por padrão, ao criar um pod, se não especificado, ele terá acesso ao token da Service Account, mas não terá permissão alguma na API. Podemos fazer uma requisição e ver tudo funcionando da seguinte forma:
 
-* Primeiro criamos um pod de teste
+* Primeiro criamos uma service account:
 
 ```
-kubectl run testeapi --image=nginx
+kubectl create serviceaccount testeapi
+```
+
+* Agora vinculamos à um pod:
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: testeapi
+  name: testeapi
+spec:
+  serviceAccountName: testeapi
+  containers:
+  - image: nginx
+    name: testeapi
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
 ```
 
 * Agora entramos no pod e pegamos o token de acesso, que está montado via volume no pod:
@@ -83,7 +101,7 @@ cat /run/secrets/kubernetes.io/serviceaccount/token
 * Com o token em mãos, basta fazer a requisição:
 
 ```
-curl https://kubernetes -k -H "Authorization: TOKENAQUI"
+curl https://kubernetes -k -H "Authorization: Bearer TOKENAQUI"
 ```
 
 * Devemos receber o seguinte retorno:
@@ -96,12 +114,9 @@ curl https://kubernetes -k -H "Authorization: TOKENAQUI"
     
   },
   "status": "Failure",
-  "message": "forbidden: User \"system:anonymous\" cannot get path \"/\"",
-  "reason": "Forbidden",
-  "details": {
-    
-  },
-  "code": 403
+  "message": "Unauthorized",
+  "reason": "Unauthorized",
+  "code": 401
 }
 ```
 
