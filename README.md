@@ -14,7 +14,7 @@ Neste repositório centralizo um conteúdo base para quem queira aprofundar seus
 03. [**Objetos do Kubernetes**](Content/objetos/README.md)
 04. [**Os principais controllers**](Content/controllers/README.md)
 05. [**Eventos e logs para troubleshooting**](Content/eventsLogs/README.md)
-06. [**Ingress e Service Mesh**](Content/dashboard/README.md)
+06. [**Ingress e Service Mesh**](Content/ingressMesh/README.md)
 07. [**RBAC, Certificados e API**](Content/dashboard/README.md)
 08. [**Algumas práticas de segurança**](Content/nginx-ingress-controller/README.md)
 09. [**Dicas para aumentar a produtividade**](Content/dicas/README.md)
