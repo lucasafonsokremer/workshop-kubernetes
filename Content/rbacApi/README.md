@@ -322,3 +322,57 @@ Em certos momentos, pode ser necessário aplicar regras para recursos não vincu
 <p align="center">
   <img src="rbacdeny.png"/>
 </p>
+
+### Exemplo prático do RBAC
+
+Primeiro criamos um namespace de teste
+
+```
+kubectl create namespace testerbac
+```
+
+Depois criamos uma conta de serviço para validar os acessos e vinculamos ao nosso namespace de testes
+
+```
+kubectl create serviceaccount sarbac --namespace testerbac
+```
+
+Agora aplicamos uma role e fazemos o bind do usuário testerbac a esta role:
+
+```
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: secret-manager
+  namespace: testerbac
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: secret-manager
+  namespace: testerbac
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: secret-manager
+subjects:
+- kind: ServiceAccount
+  name: sarbac
+  namespace: testerbac
+```
+
+Agora já podemos testar se nossa conta de serviço, consegue buscar e listar secrets com o seguinte comando:
+
+```
+kubectl auth can-i get secrets --namespace=testerbac --as system:serviceaccount:testerbac:sarbac
+```
