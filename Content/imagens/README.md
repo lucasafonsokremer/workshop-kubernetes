@@ -10,17 +10,17 @@
 
 Uma boa definição sobre isso é do Jérome Petazzoni onde ele fala o seguinte:
 
-**" Uma imagem é como se você possuísse um livro, que você pode fazer anotações como queira, entretanto, a cada anotação que você faz alguém tira um xerox desta página e te entrega apenas a cópia"**
+**"Uma imagem é como se você possuísse um livro, que você pode fazer anotações como queira, entretanto, a cada anotação que você faz alguém tira um xerox desta página e te entrega apenas a cópia."**
 
-Com base nesta definição, uma imagem seria várias instruções e cada instrução é construída em camadas (somente leitura), e no topo dela eu possuo uma camada read-write.
+Com base nesta definição, uma imagem consistiria em um conjunto de instruções, cada instrução constituindo uma camada (read-only), em forma de pilha e no topo delas temos mais uma camada read-write.
 
-Um exemplo, seria criar uma imagem e instalar um programa no sistema operacional via gerenciador de pacotes (apt-get), como ele faz um cache local no SO, se você não fizer a limpeza deste cache na mesma camada que está instalando os pacotes, na próxima camada você não conseguirá fazer esta limpeza. Portanto é uma boa prática agrupar comandos da mesma "natureza" em uma única instrução.
+Um exemplo seria criar uma imagem e instalar um programa no sistema operacional via gerenciador de pacotes (apt-get), ao executar o apt será criado um cache local no SO na mesma camada e por isso apenas nela o cache pode ser limpo, na próxima camada você não conseguirá fazer esta limpeza. Portanto é uma boa prática agrupar comandos da mesma "natureza" em uma única instrução.
 
-**Um ponto importante é que apenas as instruções RUN, COPY e ADD que criam camadas, as demais instruções criam camadas intermediárias temporárias e que não acrescentam ao tamanho final da imagem**.
+**Um ponto importante é que apenas as instruções RUN, COPY e ADD criam camadas, as demais instruções criam camadas intermediárias temporárias e que não acrescentam ao tamanho final da imagem**.
 
 ## Instruções
 
-Já vamos dar início aos nossos testes, criando nossa primeira imagem.
+Vamos dar início aos nossos testes, criando nossa primeira imagem.
 
 Primeiramente é necessário criar um diretório e colocar nele apenas arquivos que devem conter na aplicação e o próprio Dockerfile:
 
@@ -40,12 +40,12 @@ ENV maintainer="user@domain"
 RUN mkdir diretoriodomeuapp    
 ```
 
-* **FROM**       = Especifica qual imagem ele vai usar como base 
-* **LABEL**      = Informacao que vai ficar dentro do metadata do contaner
-* **ENV**        = Variavel de ambiente que vai ta dentro do container
+* **FROM**       = Especifica qual imagem será usada como base 
+* **LABEL**      = Informação que vai ficar dentro do metadata do contaner
+* **ENV**        = Variável de ambiente que vai ta dentro do container
 * **RUN**        = Executa um comando em momento de build
 
-Agora para fazer o build é simples, basta executar o seguinte comando:
+Para fazer o build, basta executar o seguinte comando:
 
 ```
 docker image build -t imagemtesteworkshop:1.0 .
@@ -53,13 +53,14 @@ docker image build -t imagemtesteworkshop:1.0 .
 
 Outras instruções importantes são:
 
-* **USER**       = Usuário que a aplicação deve rodar, por padrão é o root mas sempre deve ser utilizado outro usuário, com menos privilégios administrativos.
-* **ENTRYPOINT** = Principal processo do meu container, como se fosse um init, se este processo morrer, meu container morre. O modo EXEC é o preferido a ser utilizado no entrypoint.
+* **USER**       = Usuário a ser utilizado na execução do container, por padrão é o root, mas é preferível utilizar um usuário com menos privilégios administrativos.
+* **ENTRYPOINT** = Principal processo do container, como se fosse um init, se este processo morrer, o container morre. O modo EXEC é o preferido a ser utilizado no entrypoint.
   * Exemplo: ENTRYPOINT ["/usr/sbin/apachectl"]
-* **CMD**        = Se não existir o entrypoint, os parâmetros devem ser passados via CMD. Ele deve executar um comando/processo quando o container subir (SO PODE TER 1 CMD POR CONTAINER)
-  * Exemplo: ["CMD stress --cpu 1"]
-* **ADD e COPY** = O "COPY" copia um arquivo do diretório e joga no container, o "ADD" por outro lado copia o arquivo mas tem mais opções como descompactação e compactação de arquivos, além de conseguir baixar arquivos de uma derminada URL
-* **WORKDIR**    = Diretório padrão a ser utilizado dentro do meu container
+* **CMD**        = Se não existir o entrypoint, os parâmetros devem ser passados via CMD. Ele deve executar um comando/processo quando o container subir (apenas um CMD por container).
+  * Exemplo: CMD ["/usr/bin/stress", "--cpu", "1"]
+* **ADD e COPY** = O "COPY" copia um arquivo do diretório para o container, o "ADD" por outro lado copia o arquivo e tem mais opções como descompactação e compactação de arquivos, além de conseguir baixar arquivos de uma determinada URL
+* **WORKDIR**    = Define o diretório padrão a ser utilizado dentro do container.
+  * Exemplo: WORKDIR /opt/app/
 
 Exemplo prático de um [container](https://github.com/lucasafonsokremer/docker-build-awx):
 
@@ -112,12 +113,12 @@ RUN for virtualenvs in $(ls -1 /tmp/Dockerfile_requirements/) ; \
 
 ## Multistage
 
-Em poucas palavras, o multistage cria uma pipeline entre dois containers no qual visa deixar o container final mais enxuto e é a única forma de utilizar duas instruções FROM no mesmo Dockerfile.
+Em poucas palavras, o multistage cria uma pipeline entre dois containers visando deixar o container final mais enxuto, também é a única forma de utilizar duas instruções FROM no mesmo Dockerfile.
 
 O Multistage ataca dois pontos importantes:
 
 * Diminui a superfície de contato, deixando menos pacotes e possíveis "lixos" dentro do container, que são utilizados apenas no momento do build. Com isso aumentamos a segurança da nossa aplicação;
-* Diminui o tamanho final da imagem que será executada, portanto é mais rápido fazer o download de um registry, diminuíndo assim um possível downtime da aplicação durante o processo de atualização.
+* Diminui o tamanho final da imagem que será executada, portanto é mais rápido fazer o download de um registry, diminuindo assim um possível downtime da aplicação durante o processo de atualização.
 
 Para criar nosso app com multistage basta:
 
@@ -126,6 +127,7 @@ Para criar nosso app com multistage basta:
 mkdir /tmp/multistage
 # criar dockerfile
 touch /tmp/multistage/Dockerfile
+# criar arquivo go
 touch /tmp/multistage/meugo.go
 ```
 
@@ -144,7 +146,7 @@ COPY --from=buildando /app/meugo.go /buildfeito/
 ENTRYPOINT ./meugo.go
 ```
 
-Vamos criar também nossa aplicação:
+Agora, crie o app copiando as instruções para o arquivo meugo.go:
 
 ```
 package main
@@ -155,7 +157,7 @@ func main(){
 }
 ```
 
-Agora para fazer o build é simples, basta executar o seguinte comando:
+Agora realize o build da imagem docker executando o seguinte comando:
 
 ```
 docker image build -t multistageworkshop:1.0 .
@@ -163,7 +165,7 @@ docker image build -t multistageworkshop:1.0 .
 
 ### Comparando tamanho e segurança em images com o multistage
 
-Para validar a diferença de tamanho do nosso ap, basta rodar o seguinte comando e comparar o tamanho da imagem do golang com alpine:
+Para validar a diferença de tamanho do nosso app, basta rodar o seguinte comando e comparar o tamanho da imagem do golang com alpine:
 
 ```
 docker images | agrep 'multistage|golang'
@@ -192,7 +194,7 @@ multistageworkshop:1.0 (alpine 3.15.0)
 Total: 0 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0)
 ```
 
-* Agora vamos validar quantas vulnerabilidades existem na imagem do golang que utilizamos apenas para o build do nosso app:
+* Agora vamos verificar quantas vulnerabilidades existem na imagem do golang que utilizamos apenas para o build do nosso app:
 
 ```
 trivy image golang:latest
@@ -208,9 +210,9 @@ Total: 355 (UNKNOWN: 2, LOW: 254, MEDIUM: 54, HIGH: 31, CRITICAL: 14)
 
 ## Enviando a imagem para um registry
 
-O primeiro passo é validar se o repositório que você busca, já se encontra no registry da AWS, que você pode acessar por este [link](https://console.aws.amazon.com/ecr/repositories?region=us-east-1), lembrando é claro de mudar a região.
+O primeiro passo é validar se o repositório que você busca já se encontra no registry da AWS, que você pode acessar por este [link](https://console.aws.amazon.com/ecr/repositories?region=us-east-1), lembrando é claro de mudar a região.
 
-Após encontrar o repositório, você precisa se autenticar na AWS através do "Command line or programmatic access".
+Após encontrar o repositório, é necessário autenticar-se na AWS através do "Command line or programmatic access".
 
 Inserindo as credenciais no seu terminal e tendo o aws-cli devidamente instalado, basta realizar login no registry com o seguinte comando:
 
