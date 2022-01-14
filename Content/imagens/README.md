@@ -169,8 +169,14 @@ Para validar a diferença de tamanho do nosso ap, basta rodar o seguinte comando
 docker images | agrep 'multistage|golang'
 ```
 
-Agora como diminuímos consideravelmente a superfície de contato do container, vamos validar se realmente possuímos divergência na quantidade de riscos em aberto, mesmo utilizando imagens atualizadas:
+O retorno foi:
 
+```
+multistageworkshop                                                          1.0                 69cd0c2dca6d   22 hours ago    7.35MB
+golang                                                                      latest              8b86bf336a01   7 days ago      941MB
+```
+
+Agora como diminuímos consideravelmente a superfície de contato do container, vamos validar se realmente possuímos divergência na quantidade de riscos em aberto, mesmo utilizando imagens atualizadas:
 
 * Primeiro rodamos o comando do trivy, para a imagem do alpine, que é a imagem final da nossa aplicação:
 
