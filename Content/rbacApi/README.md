@@ -307,6 +307,18 @@ Existem dois pontos importantes do RBAC no Kubernetes, que necessitam sempre ser
 
 ### Role, ClusterRole, RoleBinding e ClusterRoleBinding
 
+[A documentação completa você pode conferir aqui](https://kubernetes.io/docs/reference/access-authn-authz/rbac/), mas para facilitar o entendimento sobre qual a função de cada objeto, você pode conferir na imagem abaixo:
+
 <p align="center">
   <img src="rbac.png"/>
+</p>
+
+Em certos momentos, pode ser necessário aplicar regras para recursos não vinculados a um namespace, como por exemplo os persistentvolumes, ou também, reutilizar algum set de permissões mas apenas atrelar em diferentes usuários. Nas imagens abaixo você pode validar este fluxo:
+
+<p align="center">
+  <img src="rbacallow.png"/>
+</p>
+
+<p align="center">
+  <img src="rbacdeny.png"/>
 </p>
