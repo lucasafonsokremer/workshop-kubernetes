@@ -55,6 +55,39 @@ Todos os certificados do cluster estão disponíveis em:
 
 ## Conversando com a API do cluster
 
+### Consumindo a API do Kubernetes de dentro do pod
+
+Para consumir e realizar alguma ação na API do Kubernetes, necessitamos de duas coisas:
+
+* Uma Service Account com token de acesso
+* RBAC liberando ações para esta Service Account
+
+Normalmente, uma aplicação comum não deve possuir o token e nenhuma regra fazendo bind liberando assim o seu acesso. Você até pode ver aplicações interagindo com a API do Kubernetes, mas normalmente será um operator.
+
+Por padrão, ao criar um pod, se não especificado, ele terá acesso ao token da Service Account, mas não terá permissão alguma na API. Podemos fazer uma requisição e ver tudo funcionando da seguinte forma:
+
+* Primeiro criamos um pod de teste
+
+```
+kubectl run testeapi --image=nginx
+```
+
+* Agora entramos no pod e pegamos o token de acesso, que está montado via volume no pod:
+
+```
+kubectl exec -it testeapi -- /bin/bash
+
+cat /run/secrets/kubernetes.io/serviceaccount/token
+```
+
+* Com o token em mãos, basta fazer a requisição:
+
+```
+curl https://kubernetes -k -H "Authorization: TOKENAQUI"
+```
+
+### Consumindo a API do Kubernetes externamente
+
 Agora vamos fazer uma requisição manual na API do kubernetes, utilizando o mesmo yaml que o kubectl utiliza.
 
 * Primeiro passo é pegar o conteúdo do usuário padrão do kubernetes:
