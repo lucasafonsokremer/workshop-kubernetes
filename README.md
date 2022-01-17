@@ -34,7 +34,7 @@ Neste repositório centralizo um conteúdo base para quem queira aprofundar seus
 
 Obrigado [@edmilson](https://github.com/edmilsonjnior) por realizar a revisão de todo o conteúdo e contribuir com ideias.
 
-Obrigado @DanielSantos por algumas ideias sobre a ementa.
+Obrigado [@DanielSantos](https://www.linkedin.com/in/daniel-f-santos) pelas várias ideias sobre a ementa.
 
 O conteúdo e os laboratórios são 100% de autoria própria, mas algumas definições foram embasadas no conteúdo dos seguintes autores:
 
