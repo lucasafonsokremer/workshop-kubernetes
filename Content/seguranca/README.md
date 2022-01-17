@@ -31,7 +31,34 @@ automountServiceAccountToken: false
 
 ## Hardening: Deployment
 
+O security context é o campo para realizar especificações e parametrizar alguns "guardrails".
 
+[Nesta documentação](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) podemos aprofundar um pouco mais sobre o tema.
+
+Um ponto importante é cuidar para colocar o security context no local correto, pois se colocar a nível do pod, é possível que afete a funcionalidade de algum sidecar como o Istio.
+
+### Security Context para sobreescrever o usuário padrão do pod:
+
+```
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 3000
+    fsGroup: 2000
+```
+
+### Security Context para garantir que um processo não escale privilégios dentro do pod:
+
+```
+  securityContext:
+    allowPrivilegeEscalation: false
+```
+
+### Security Context para garantir que o file system está como read only:
+
+```
+  securityContext:
+    readOnlyFileSystem: true
+```
 
 ## Hardening: Secrets
 
