@@ -1,5 +1,11 @@
 # Algumas práticas de segurança
 
+## Usuário não privilegiado
+
+Não é uma boa práticia utilizar o usuário root (padrão) nas imagens, portanto na criação do seu container, o ideial é definir um usuário não privilegiado para executar a aplicação.
+
+Segundo este [report da sysdig](https://sysdig.com/blog/sysdig-2021-container-security-usage-report/), quase 60% das aplicações que rodam em produção, rodam com usuário root.
+
 ## Fazer uso do multi-stage
 
 É uma boa prática fazer o uso do multi-stage [conforme documentação e exemplo neste link](https://github.com/lucasafonsokremer/workshop-kubernetes/blob/main/Content/imagens/README.md#multistage).
@@ -25,4 +31,8 @@ automountServiceAccountToken: false
 
 ## Hardening: Deployment
 
- 
+
+
+## Hardening: Secrets
+
+[Neste vídeo](https://youtu.be/f4Ru6CPG1z4) podemos ter uma boa base sobre melhores formas de armazenar e utilizar segredos no Kubernetes. 
