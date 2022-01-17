@@ -26,6 +26,8 @@ A imagem abaixo compara a execução de aplicações em servidores físicos, vir
   <img src="https://d33wubrfki0l68.cloudfront.net/26a177ede4d7b032362289c6fccd448fc4a91174/eb693/images/docs/container_evolution.svg"/>
 </p>
 
+Fonte: Imagem obtida diretamente pelo Google
+
 ## Namespaces
 
 O Namespace é uma funcionalidade do Kernel Linux que vem desde a versão 2.6.24 e ele permite o total isolamento de processos. **Em poucas palavras, os namespaces são nosso separador lógico**. Basicamente ele permite que um container possua seu próprio ambiente isolado, ou seja, cada container possui a sua árvore de processos, sem que um interfira na execução do outro.
@@ -93,8 +95,13 @@ Mas para facilitar, seus principais componentes são:
   <img src="https://d33wubrfki0l68.cloudfront.net/518e18713c865fe67a5f23fc64260806d72b38f5/61d75/images/docs/post-ccm-arch.png"/>
 </p>
 
+Fonte: Imagem obtida diretamente pelo Google
+
 ### Mas e como todos estes componentes se conversam, para subir meu container?
 
 <p align="center">
   <img src="https://cdn-images-1.medium.com/max/1500/1*WDJmiyarVfcsDp6X1-lLFQ.png"/>
 </p>
+
+Fonte: Imagem obtida diretamente pelo Google
+

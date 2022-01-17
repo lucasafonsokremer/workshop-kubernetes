@@ -52,6 +52,8 @@ O Deployment é um dos principais senão o principal controller do seu cluster. 
   <img src="https://www.bluematador.com/hs-fs/hubfs/blog/new/Kubernetes%20Deployments%20-%20Rolling%20Update%20Configuration/Kubernetes-Deployments-Rolling-Update-Configuration.gif?width=1600&name=Kubernetes-Deployments-Rolling-Update-Configuration.gif"/>
 </p>
 
+Fonte: Imagem obtida diretamente pelo Google
+
 Nele, possuímos três pontos importates:
 
 * Especificações do deployment, área não existente quando criamos o exemplo do pod;
@@ -127,6 +129,8 @@ spec:
   <img src="https://blog.kubecost.com/assets/images/k8s-recs-ands-limits.png"/>
 </p>
 
+Fonte: Imagem obtida diretamente pelo Google
+
 ### Health Check da aplicação com liveness e readiness probes
 
 O Health Check é peça fundamental para redução do downtime de uma aplicação. No Kubernetes possuímos dois probes importantes que seriam:
@@ -173,6 +177,8 @@ spec:
 <p align="center">
   <img src="https://miro.medium.com/max/1400/1*fdNZeCl7TESpFtrCcZKYcg.gif"/>
 </p>
+
+Fonte: Imagem obtida diretamente pelo Google
 
 ## Namespaces
 
@@ -255,6 +261,8 @@ O Service consegue este balanceamento, já que outro controller, o Endpoints, po
 <p align="center">
   <img src="https://miro.medium.com/max/700/1*KIVa4hUVZxg-8Ncabo8pdg.png"/>
 </p>
+
+Fonte: Imagem obtida diretamente pelo Google
 
 Ao expor um serviço, precisamos ter em mente que:
 

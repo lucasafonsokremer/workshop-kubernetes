@@ -313,15 +313,21 @@ Existem dois pontos importantes do RBAC no Kubernetes, que necessitam sempre ser
   <img src="rbac.png"/>
 </p>
 
+Fonte: O autor
+
 Em certos momentos, pode ser necessário aplicar regras para recursos não vinculados a um namespace, como por exemplo os persistentvolumes, ou também, reutilizar algum set de permissões mas apenas atrelar em diferentes usuários. Nas imagens abaixo você pode validar este fluxo:
 
 <p align="center">
   <img src="rbacallow.png"/>
 </p>
 
+Fonte: O autor
+
 <p align="center">
   <img src="rbacdeny.png"/>
 </p>
+
+Fonte: O autor
 
 ### Exemplo prático 1: RBAC
 
