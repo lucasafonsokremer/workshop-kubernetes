@@ -63,3 +63,7 @@ Um ponto importante é cuidar para colocar o security context no local correto, 
 ## Hardening: Secrets
 
 [Neste vídeo](https://youtu.be/f4Ru6CPG1z4) podemos ter uma boa base sobre melhores formas de armazenar e utilizar segredos no Kubernetes. 
+
+## Hardening: RBAC
+
+Manter o RBAC sempre com o menor privilégio e o máximo de restrição. Exemplo de como fazer isto [nesta documentação](https://github.com/lucasafonsokremer/workshop-kubernetes/blob/main/Content/rbacApi/README.md#role-based-access-control-rbac).
