@@ -323,7 +323,7 @@ Em certos momentos, pode ser necessário aplicar regras para recursos não vincu
   <img src="rbacdeny.png"/>
 </p>
 
-### Exemplo prático do RBAC
+### Exemplo prático 1: RBAC
 
 Primeiro criamos um namespace de teste
 
@@ -375,4 +375,73 @@ Agora já podemos testar se nossa conta de serviço, consegue buscar e listar se
 
 ```
 kubectl auth can-i get secrets --namespace=testerbac --as system:serviceaccount:testerbac:sarbac
+```
+
+### Exemplo prático 2: RBAC e API
+
+Como já aprendemos sobre RBAC e a API do Kubernetes, vamos integrar os assuntos e trabalhar em um laboratório mais completo, que além de liberar alguns acessos a uma service account, consome a API do Kubernetes.
+
+Primeiramente vamos liberar às permissões:
+
+```
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pods-manager
+  namespace: testerbac
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pods-manager
+  namespace: testerbac
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pods-manager
+subjects:
+- kind: ServiceAccount
+  name: sarbac
+  namespace: testerbac
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: testeapi
+  name: testeapi
+  namespace: testerbac
+spec:
+  serviceAccountName: sarbac
+  containers:
+  - image: nginx
+    name: testeapi
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+```
+
+Agora podemos validar se nossa service account já possui as permissões que gostaríamos:
+
+```
+kubectl auth can-i list pods --namespace=testerbac --as system:serviceaccount:testerbac:sarbac
+``` 
+
+Por fim, vamos acessar o pod e tentar listar os pods existentes (**lembrando que agora estamos em outro namespace, portanto na requisição é necessário passar na url qual namespace o service se encontra**):
+
+```
+# conectar no pod
+kubectl exec -it testeapi --namespace testerbac -- /bin/bash
+# realizar a requisição
+curl https://kubernetes.default/api/v1/namespaces/testerbac/pods -k -H "Authorization: Bearer TOKENAQUI"
 ```
