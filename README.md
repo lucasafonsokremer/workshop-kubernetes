@@ -29,3 +29,16 @@ Neste repositório centralizo um conteúdo base para quem queira aprofundar seus
 - **Caso você queira executar os comandos através da plataforma play with Kubernetes:**
 
 01. Acessar a plataforma neste [link](https://labs.play-with-k8s.com). Com ela você poderá explorar um pouco do Kubernetes, com o menor esforço.
+
+## Considerações
+
+Obrigado [@edmilson](https://github.com/edmilsonjnior) por realizar a revisão de todo o conteúdo e contribuir com ideias.
+
+Obrigado @DanielSantos por algumas ideias sobre a ementa.
+
+O conteúdo e os laboratórios são 100% de autoria própria, mas algumas definições foram embasadas no conteúdo dos seguintes autores:
+
+* Jérôme Petazzoni
+* Jeferson Fernando Noronha Vitalino (LinuxTips)
+* Livro: Devops nativo de nubem com Kubernetes
+* Killer Shell
