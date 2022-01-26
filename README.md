@@ -40,5 +40,7 @@ O conteúdo e os laboratórios são de autoria própria com auxílio é claro de
 
 * Jérôme Petazzoni
 * Jeferson Fernando Noronha Vitalino (LinuxTips)
+* Ellen Korbes
+* TechWorld with Nana
 * Livro: Devops nativo de nubem com Kubernetes
 * Killer Shell
