@@ -36,7 +36,7 @@ Obrigado [@edmilson](https://github.com/edmilsonjnior) por realizar a revisão d
 
 Obrigado [@DanielSantos](https://www.linkedin.com/in/daniel-f-santos) pelas várias ideias sobre a ementa.
 
-O conteúdo e os laboratórios são 100% de autoria própria, mas algumas definições foram embasadas no conteúdo dos seguintes autores:
+O conteúdo e os laboratórios são de autoria própria com auxílio é claro de algumas imagens de outros autores, obtidas através do Google e devidamente referenciadas. Além disso, algumas definições foram embasadas no conteúdo dos seguintes escritores:
 
 * Jérôme Petazzoni
 * Jeferson Fernando Noronha Vitalino (LinuxTips)
