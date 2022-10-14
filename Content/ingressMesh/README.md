@@ -90,4 +90,12 @@ Fonte: Imagem obtida diretamente pelo Google
 
 ## O API Gateway
 
+No pattern de API Gateway, estamos basicamente simplificando explicitamente a chamada de um grupo de APIs para emular o uso de um aplicativo para um conjunto de usuários, clientes ou consumidores. Em outras palavras, um API Gateway está muito mais próximo da visão do mundo do desenvolvedor e com menos foco em qual porta ou serviço será exposta. O API Gateway também é diferente do API Management, já que o API Gateway pode misturar chamadas de API ao backend com chamadas RPC, sistemas legados ou até mesmo chamadas para outros serviços como funções lambda.
 
+Exemplos de API Gateway:
+
+--> Gloo Edge
+--> Spring Cloud Gateway
+--> Netflix Zuul
+
+## Lab: Criando e expondo serviços com um API Gateway
