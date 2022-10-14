@@ -98,4 +98,10 @@ Exemplos de API Gateway:
 --> Spring Cloud Gateway
 --> Netflix Zuul
 
+<p align="center">
+  <img src="https://blog.christianposta.com/images/identity-crisis/api-gateway-pattern.png"/>
+</p>
+
+Fonte: Imagem obtida diretamente pelo Google
+
 ## Lab: Criando e expondo serviços com um API Gateway
