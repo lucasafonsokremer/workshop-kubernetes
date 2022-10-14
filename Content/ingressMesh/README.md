@@ -97,6 +97,7 @@ No pattern de API Gateway, estamos basicamente simplificando explicitamente a ch
 Exemplos de API Gateway:
 
   - Gloo Edge
+  - Emissary Ingress
   - Spring Cloud Gateway
   - Netflix Zuul
 
