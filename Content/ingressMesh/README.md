@@ -1,5 +1,7 @@
 # Ingress e Service Mesh
 
+Antes de começarmos, o seguinte [livro](https://microservices.io/book) foi utilizado como base para várias destas fundamentações.
+
 ## Definição de uma API
 
 - "É uma interface projetada para ser invocada em uma rede que permite outro usuário obter acesso programático dos dados e funcionaliades" 
@@ -56,10 +58,10 @@ Fonte: Imagem obtida diretamente pelo Google
 
 - Exemplos de software para API Management:
 
---> Google Apigee
---> Red Hat 3Scale
---> Mulesoft
---> Kong
+  - Google Apigee
+  - Red Hat 3Scale
+  - Mulesoft
+  - Kong
 
 <p align="center">
   <img src="https://blog.christianposta.com/images/identity-crisis/api-management-sketch.png"/>
@@ -74,13 +76,13 @@ Com este serviço, podemos querer um tipo de "gateway de entrada" para nossa est
 Exemplos de ingress controller:
 
 - Baseadas no Envoy:
---> Istio
---> Ambassador
---> Gloo
+  - Istio
+  - Ambassador
+  - Gloo
 - Outras tecnologias:
---> HAProxy
---> Nginx
---> Traefik
+  - HAProxy
+  - Nginx
+  - Traefik
 
 <p align="center">
   <img src="https://blog.christianposta.com/images/identity-crisis/cluster-ingress-sketch.png"/>
@@ -94,9 +96,9 @@ No pattern de API Gateway, estamos basicamente simplificando explicitamente a ch
 
 Exemplos de API Gateway:
 
---> Gloo Edge
---> Spring Cloud Gateway
---> Netflix Zuul
+  - Gloo Edge
+  - Spring Cloud Gateway
+  - Netflix Zuul
 
 <p align="center">
   <img src="https://blog.christianposta.com/images/identity-crisis/api-gateway-pattern.png"/>
