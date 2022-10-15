@@ -251,3 +251,300 @@ curl $(glooctl proxy url)/all-pets
 ```
 [{"id":1,"name":"Dog","status":"available"},{"id":2,"name":"Cat","status":"pending"}]
 ```
+
+- Em caso de erro você pode validar as configurações do seu API Gateway da seguinte forma
+
+```
+glooctl check
+```
+
+### External Authorization com OPA
+
+- Vamos primeiramente criar outro app de testes
+
+```
+kubectl create -f https://raw.githubusercontent.com/istio/istio/master/samples/httpbin/httpbin.yaml
+```
+
+- Agora vamos criar o roteamento da aplicação de testes
+
+```
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  name: default
+  namespace: gloo-system
+  ownerReferences: []
+status:
+  reportedBy: gateway
+  state: Accepted
+  subresourceStatuses:
+    '*v1.Proxy.gloo-system.gateway-proxy':
+      reportedBy: gloo
+      state: Accepted
+spec:
+  virtualHost:
+    domains:
+    - '*'
+    routes:
+    - matchers:
+      - exact: /all-pets
+      options:
+        prefixRewrite: /api/pets
+      routeAction:
+        single:
+          upstream:
+            name: default-petstore-8080
+            namespace: gloo-system
+    - matchers:
+      - exact: /get 
+
+      routeAction:
+        single:
+          upstream:
+            name: default-httpbin-8000 
+            namespace: gloo-system
+    - matchers:
+      - exact: /post  
+
+      routeAction:
+        single:
+          upstream:
+            name: default-httpbin-8000 
+            namespace: gloo-system
+```
+
+```
+kubectl apply -f vs.yaml
+```
+
+- Vamos testar as configs do API Gateway novamente
+
+```
+glooctl check
+```
+
+- Agora podemos validar nossa aplicação do httpbin
+
+```
+curl -XGET -Is $(glooctl proxy url)/get
+curl -XPOST -Is $(glooctl proxy url)/post
+```
+
+- Agora que estamos com a aplicação de testes em funcionamento, vamos aplicar uma policy simples via OPA-Envoy para validar o token e o método utilizado em cada endpoint
+
+```
+############################################################
+# Configuration to bootstrap OPA-Envoy sidecars.
+############################################################
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opa-envoy-config
+data:
+  config.yaml: |
+    plugins:
+      envoy_ext_authz_grpc:
+        addr: :9191
+        path: envoy/authz/allow
+    decision_logs:
+      console: true
+
+---
+
+############################################################
+# Policy to enforce into OPA-Envoy sidecars.
+############################################################
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opa-policy
+data:
+  policy.rego: |
+    package envoy.authz
+
+    import future.keywords
+
+    import input.attributes.request.http as http_request
+
+    default allow := false
+
+    allow if {
+        is_token_valid
+        action_allowed
+    }
+
+    is_token_valid if {
+        token.valid
+        now := time.now_ns() / 1000000000
+        token.payload.nbf <= now
+        now < token.payload.exp
+    }
+
+    action_allowed if {
+        http_request.method == "GET"
+        token.payload.role == "guest"
+    }
+
+    action_allowed if {
+        http_request.method == "GET"
+        token.payload.role == "admin"
+    }
+
+    action_allowed if {
+        http_request.method == "POST"
+        token.payload.role == "admin"
+    }
+
+    token := {"valid": valid, "payload": payload} if {
+        [_, encoded] := split(http_request.headers.authorization, " ")
+        [valid, _, payload] := io.jwt.decode_verify(encoded, {"secret": "secret"})
+    }
+
+
+
+
+---
+############################################################
+# OPA-Envoy deployment. 
+############################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opa
+  labels:
+    app: opa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opa
+  template:
+    metadata:
+      labels:
+        app: opa
+    spec:
+      containers:
+        - name: opa
+          image: openpolicyagent/opa:0.45.0-envoy
+          volumeMounts:
+            - readOnly: true
+              mountPath: /policy
+              name: opa-policy
+            - readOnly: true
+              mountPath: /config
+              name: opa-envoy-config
+          args:
+            - "run"
+            - "--server"
+            - "--config-file=/config/config.yaml"
+            - "--addr=0.0.0.0:8181"
+            - "--ignore=.*"
+            - "/policy/policy.rego"
+      volumes:
+        - name: opa-policy
+          configMap:
+            name: opa-policy
+        - name: opa-envoy-config
+          configMap:
+            name: opa-envoy-config
+
+---
+############################################################
+# Expose OPA-Envoy
+############################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: opa
+spec:
+  selector:
+    app: opa
+  ports:
+    - name: grpc
+      protocol: TCP
+      port: 9191
+      targetPort: 9191
+```
+
+```
+kubectl apply -f opadeployment.yaml
+```
+
+- Vamos agora alterar as configs do API Gateway para trabalhar com o OPA
+
+```
+global:
+  extensions:
+    extAuth:
+      extauthzServerRef:
+        name: default-opa-9191 
+        namespace: gloo-system
+```
+
+- Aplicamos as configs acima da seguinte forma
+
+```
+helm upgrade --install --namespace gloo-system --create-namespace -f gloo.yaml gloo gloo/gloo
+```
+
+- Agora alteramos o arquivo de rotas para trabalhar com o OPA
+
+```
+spec:
+  virtualHost:
+    options:
+      extauth:
+        customAuth: {}
+```
+
+```
+kubectl patch vs default -n gloo-system --type=merge --patch "$(cat vs-patch.yaml)"
+```
+
+### Testando nossa aplicação com os filtros de autorização do OPA
+
+- Exportamos dois tokens em nosso terminal apenas para testes
+
+```
+export ALICE_TOKEN="eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJleHAiOiAyMjQxMDgxNTM5LCAibmJmIjogMTUxNDg1MTEzOSwgInJvbGUiOiAiZ3Vlc3QiLCAic3ViIjogIllXeHBZMlU9In0.Uk5hgUqMuUfDLvBLnlXMD0-X53aM_Hlziqg3vhOsCc8"
+export BOB_TOKEN="eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJleHAiOiAyMjQxMDgxNTM5LCAibmJmIjogMTUxNDg1MTEzOSwgInJvbGUiOiAiYWRtaW4iLCAic3ViIjogIlltOWkifQ.5qsm7rRTvqFHAgiB6evX0a_hWnGbWquZC0HImVQPQo8"
+```
+
+- Rodamos via curl um teste
+
+```
+curl -XGET -Is -H "Authorization: Bearer $ALICE_TOKEN" $(glooctl proxy url)/get
+HTTP/1.1 200 OK
+```
+
+```
+curl http -XPOST -Is -H "Authorization: Bearer $ALICE_TOKEN" $(glooctl proxy url)/post
+HTTP/1.1 403 Forbidden
+```
+
+```
+curl http -XPOST -Is -H "Authorization: Bearer $BOB_TOKEN" $(glooctl proxy url)/post
+HTTP/1.1 200 OK
+```
+
+- Validando tempo de resposta
+
+```
+time curl -XGET -Is -H "Authorization: Bearer $ALICE_TOKEN" $(glooctl proxy url)/get
+HTTP/1.1 200 OK
+server: envoy
+date: Sat, 15 Oct 2022 19:08:44 GMT
+content-type: application/json
+content-length: 528
+access-control-allow-origin: *
+access-control-allow-credentials: true
+x-envoy-upstream-service-time: 1
+x-envoy-decorator-operation: httpbin.default.svc.cluster.local:8000/*
+
+
+real	0m0,091s
+user	0m0,056s
+sys	0m0,038s
+```
+
