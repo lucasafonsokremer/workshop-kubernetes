@@ -399,9 +399,6 @@ data:
         [valid, _, payload] := io.jwt.decode_verify(encoded, {"secret": "secret"})
     }
 
-
-
-
 ---
 ############################################################
 # OPA-Envoy deployment. 
