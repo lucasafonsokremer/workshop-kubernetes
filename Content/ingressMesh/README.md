@@ -116,3 +116,138 @@ Exemplos de API Gateway:
 Fonte: Imagem obtida diretamente pelo Google
 
 ## Lab: Criando e expondo serviços com um API Gateway
+
+Observação: O API Gateway vai demandar de um serviço tipo Load Balancer, caso você esteja atuando em ambiente onpremise é necessário instalar o MetalLB conforme [esta documentação](https://github.com/lucasafonsokremer/k8s-dev-env-with-kind/blob/main/Content/metallb/README.md)
+
+### Instalando o glooctl
+
+- Primeiramente instalar o glooctl
+
+```
+curl -sL https://run.solo.io/gloo/install | sh
+export PATH=$HOME/.gloo/bin:$PATH
+```
+
+- Validar se está funcional
+
+```
+glooctl version
+```
+
+### Instalando o Gloo Edge (Open Source Edition)
+
+- Instalando o repo helm
+
+```
+helm repo add gloo https://storage.googleapis.com/solo-public-helm
+helm repo update
+kubectl create namespace gloo-system
+```
+
+- Instalando o gloo
+
+```
+helm install gloo gloo/gloo --namespace gloo-system
+```
+
+- Validando a instalação
+
+```
+kubectl get all -n gloo-system
+```
+
+```
+NAME                                READY     STATUS    RESTARTS   AGE
+pod/discovery-f7548d984-slddk       1/1       Running   0          5m
+pod/gateway-proxy-9d79d48cd-wg8b8   1/1       Running   0          5m
+pod/gloo-5b7b748dbf-jdsvg           1/1       Running   0          5m
+
+
+
+NAME                    TYPE           CLUSTER-IP      EXTERNAL-IP       PORT(S)                     AGE
+service/gateway-proxy   LoadBalancer   10.97.232.107   192.168.10.100    80:30221/TCP,443:32340/TCP  5m 
+service/gloo            ClusterIP      10.100.64.166   <none>            9977/TCP,9988/TCP,9966/TCP  5m
+
+
+
+NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/discovery       1/1     1            1           5m
+deployment.apps/gateway-proxy   1/1     1            1           5m
+deployment.apps/gloo            1/1     1            1           5m
+
+
+
+NAME                                      DESIRED   CURRENT   READY     AGE
+replicaset.apps/discovery-f7548d984       1         1         1         5m
+replicaset.apps/gateway-proxy-9d79d48cd   1         1         1         5m
+replicaset.apps/gloo-5b7b748dbf           1         1         1         5m
+```
+
+### Criando uma aplicação de testes
+
+- Vamos instalar uma aplicação do próprio gloo
+
+```
+kubectl apply -f https://raw.githubusercontent.com/solo-io/gloo/v1.11.x/example/petstore/petstore.yaml
+```
+
+- Validando a instalação
+
+```
+kubectl -n default get pods
+kubectl -n default get svc petstore
+```
+
+- Validar se o discovery colocou o upstream como ativo
+
+```
+glooctl get upstreams | grep petstore
+```
+
+- Agora basta criar uma rota para o serviço
+
+```
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  name: default
+  namespace: gloo-system
+  ownerReferences: []
+status:
+  reportedBy: gateway
+  state: Accepted
+  subresourceStatuses:
+    '*v1.Proxy.gloo-system.gateway-proxy':
+      reportedBy: gloo
+      state: Accepted
+spec:
+  virtualHost:
+    domains:
+    - '*'
+    routes:
+    - matchers:
+      - exact: /all-pets
+      options:
+        prefixRewrite: /api/pets
+      routeAction:
+        single:
+          upstream:
+            name: default-petstore-8080
+            namespace: gloo-system
+```
+
+```
+kubectl create -f virtualservicepetstore.yaml
+```
+
+- Por fim podemos testar o serviço acessando o api gateway
+
+```
+curl $(glooctl proxy url)/all-pets
+```
+
+- O retorno deve ser o seguinte
+
+```
+[{"id":1,"name":"Dog","status":"available"},{"id":2,"name":"Cat","status":"pending"}]
+```
