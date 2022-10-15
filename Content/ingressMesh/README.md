@@ -298,7 +298,6 @@ spec:
             namespace: gloo-system
     - matchers:
       - exact: /get 
-
       routeAction:
         single:
           upstream:
@@ -306,7 +305,6 @@ spec:
             namespace: gloo-system
     - matchers:
       - exact: /post  
-
       routeAction:
         single:
           upstream:
